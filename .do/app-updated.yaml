@@ -1,5 +1,15 @@
 name: medusa-admin
 region: fra
+domains:
+- domain: shop.mediabox.co
+  type: PRIMARY
+ingress:
+  rules:
+  - component:
+      name: admin
+    match:
+      path:
+        prefix: /app
 static_sites:
 - name: admin
   github:
