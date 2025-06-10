@@ -9,4 +9,11 @@ static_sites:
   source_dir: /
   output_dir: /
   index_document: index.html
+<<<<<<< HEAD
   catchall_document: index.html
+=======
+  error_document: index.html
+  routes:
+  - path: /*
+    rewrite_path: /index.html
+>>>>>>> d37206d93441bd2cad8432849762355d92dbfd31
