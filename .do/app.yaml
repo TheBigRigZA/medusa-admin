@@ -1,0 +1,12 @@
+name: medusa-admin
+region: fra
+static_sites:
+- name: admin
+  github:
+    repo: TheBigRigZA/medusa-admin
+    branch: main
+    deploy_on_push: true
+  source_dir: /
+  output_dir: /
+  index_document: index.html
+  catchall_document: index.html
