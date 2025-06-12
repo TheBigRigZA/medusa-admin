@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Medusa Admin Dashboard Static Site",
   "scripts": {
-    "serve": "npx serve -l 8080"
+    "serve": "npx serve -l 8080",
+    "patch": "node patch-admin.js",
+    "build": "node patch-admin.js",
+    "postbuild": "echo 'Mediabox branding applied successfully!'"
   },
   "dependencies": {
     "serve": "^14.2.0"
