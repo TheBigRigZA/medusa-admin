@@ -320,11 +320,27 @@ if (typeof document !== 'undefined' && !document.getElementById('mediabox-login-
         background-color: var(--mediabox-primary) !important;
       }
       
-      /* Update progress bars and loading indicators */
-      [class*="bg-ui-tag-green"],
-      [class*="bg-green"],
+      /* Update progress bars and loading indicators - but preserve status indicators */
       .progress-bar {
         background-color: var(--mediabox-primary) !important;
+      }
+      
+      /* Preserve green status indicators for product/service status */
+      .bg-ui-tag-green-icon,
+      [class*="bg-ui-tag-green-icon"],
+      .status-indicator.green,
+      [class*="status-green"],
+      [class*="live-status"],
+      [class*="active-status"] {
+        background-color: #10b981 !important; /* Keep original green for status */
+      }
+      
+      /* Preserve other semantic green colors for status/success states */
+      .bg-green-500,
+      .bg-emerald-500,
+      [class*="success"],
+      [class*="bg-ui-tag-green"]:not([class*="button"]):not([class*="interactive"]) {
+        background-color: #10b981 !important;
       }
       
       /* Update checkboxes and radio buttons */
