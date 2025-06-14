@@ -6,6 +6,8 @@
     "serve": "npx serve -l 8080",
     "patch": "node patch-admin.js",
     "build": "node patch-admin.js",
+    "patch:local": "MEDUSA_BACKEND_URL=http://localhost:9000 node patch-admin.js",
+    "patch:production": "MEDUSA_BACKEND_URL=https://shop.mediabox.co node patch-admin.js",
     "postbuild": "echo 'Mediabox branding applied successfully!'"
   },
   "dependencies": {

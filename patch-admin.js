@@ -92,6 +92,10 @@ const imageToBase64 = (imagePath) => {
 console.log("🎨 Applying Mediabox branding customizations to static build...");
 console.log("Working directory:", __dirname);
 
+// Configuration: Set your backend URL here
+const BACKEND_URL = process.env.MEDUSA_BACKEND_URL || "https://shop.mediabox.co";
+console.log("Backend URL configured as:", BACKEND_URL);
+
 try {
   // 1) Welcome to Medusa -> Welcome to The Mediabox Global Ecommerce Store Admin Portal
   console.log("\n1. Searching for welcome text...");
@@ -364,6 +368,73 @@ if (typeof document !== 'undefined' && !document.getElementById('mediabox-login-
     }
   }
 
+  // 5) Update backend URL configuration
+  console.log("\n5. Updating backend URL configuration...");
+  try {
+    // Find the file that contains the SDK initialization (var Nae= and new Lae)
+    const dirPath = path.join(__dirname, "assets");
+    const files = fs.readdirSync(dirPath);
+    const indexFiles = files.filter(file => file.startsWith("index-") && file.endsWith(".js"));
+    
+    let mainJsFile = null;
+    for (const file of indexFiles) {
+      const filePath = path.join(dirPath, file);
+      const content = fs.readFileSync(filePath, 'utf8');
+      if (content.includes('new Lae({baseUrl:') && content.includes('var Nae=')) {
+        mainJsFile = filePath;
+        break;
+      }
+    }
+    
+    if (!mainJsFile) {
+      throw new Error("Could not find main JS file containing SDK initialization");
+    }
+    
+    console.log(`  Found main JS file: ${mainJsFile}`);
+    let content = fs.readFileSync(mainJsFile, 'utf8');
+    const originalContent = content;
+    
+    // Replace the hardcoded backend URL with direct string replacement
+    console.log(`  Looking for: var Nae="https://shop.mediabox.co"`);
+    console.log(`  Replacement: var Nae="${BACKEND_URL}"`);
+    
+    // Direct string replacement for the exact pattern
+    const oldPattern = 'var Nae="https://shop.mediabox.co"';
+    const newPattern = `var Nae="${BACKEND_URL}"`;
+    
+    if (content.includes(oldPattern)) {
+      console.log(`  Found exact pattern, replacing...`);
+      content = content.replace(oldPattern, newPattern);
+    } else {
+      console.log("  Exact pattern not found, checking for any Nae declaration...");
+      
+      // Try to find any var Nae= pattern
+      const matches = content.match(/var Nae="[^"]*"/g);
+      if (matches) {
+        console.log(`  Found existing Nae declaration: ${matches[0]}`);
+        content = content.replace(/var Nae="[^"]*"/g, newPattern);
+      } else {
+        console.log("  No Nae variable found");
+      }
+    }
+    
+    // Also replace any remaining hardcoded URLs
+    const remainingUrls = content.match(/https:\/\/shop\.mediabox\.co/g);
+    if (remainingUrls) {
+      console.log(`  Found ${remainingUrls.length} additional URL references to replace`);
+      content = content.replace(/https:\/\/shop\.mediabox\.co/g, BACKEND_URL);
+    }
+    
+    if (content !== originalContent) {
+      writeFile(content, mainJsFile);
+      console.log(`✓ Updated backend URL to: ${BACKEND_URL}`);
+    } else {
+      console.log(`✓ Backend URL already set to: ${BACKEND_URL}`);
+    }
+  } catch (error) {
+    console.log("❌ Error updating backend URL:", error.message);
+  }
+
   console.log("\n✅ Mediabox branding customizations applied successfully!");
   console.log("\n📋 Summary of changes:");
   console.log("   • Welcome text updated to Mediabox branding");
@@ -372,6 +443,7 @@ if (typeof document !== 'undefined' && !document.getElementById('mediabox-login-
   console.log("   • Global CSS styles applied for consistent branding");
   console.log("   • Favicon reference updated");
   console.log("   • Primary color scheme changed to Mediabox colors (#df3d58)");
+  console.log(`   • Backend URL configured as: ${BACKEND_URL}`);
 
 } catch (error) {
   console.error("❌ Error applying customizations:", error);
